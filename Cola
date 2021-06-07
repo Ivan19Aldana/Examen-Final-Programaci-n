@@ -1,0 +1,217 @@
+/*
+* PROGRAMACION I EXAMEN FINAL
+* Mynor Ivan Aldana Marin 0909-20-5400
+* PROGRAMA NO.2 COLA, ARRAY QUE ALMACENE LOS NOMBRES DE CLIENTES
+*/
+
+
+//DECLARACION LIBRERIAS
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
+using namespace std;
+
+//DEFINIMOS QUE EN N TENEMOS 50, QUE LO OCUPAREMOS CUANDO HAGAMOS UNA VARIABLE
+#define N 50
+
+typedef struct persona {
+    //DECLARAMOS VARIABLE NOMBRE N=50
+    char nom[N];
+    
+};
+
+/* DEFINIMOS UNA ESTRUCTURA DE LOS NODOS EN LA COLA */
+
+typedef struct nodo {
+    struct persona per;
+    struct nodo* sgte;
+};
+
+/*    DEFINIMOS ESTRUCTURA DE LA COLA  */
+
+typedef struct cola {
+    struct nodo* delante;
+    struct nodo* atras;
+};
+
+/*       FUNCION DE ENCOLAR EL NOMBRE  ENQUEUE   */
+
+void encolar(struct cola* q, struct persona valor) 
+{
+    struct nodo* aux = new(struct nodo);
+
+    aux->per = valor;
+    aux ->sgte = NULL;
+
+    if (q->delante == NULL)
+        q->delante = aux;   // ENCOLA EL PRIMER NOMBRE
+    else
+        (q->atras)->sgte = aux;
+
+    q->atras = aux;        // PUNTERO QUE SIEMPRE APUNTA AL ULTIMO ELEMNTO (NOMBRE)
+
+}
+
+/*  FUNCION DESENCOLAR EL NOMBRE DEQUEUE */
+
+struct persona desencolar(struct cola &q) {
+
+    struct persona nom;
+    struct nodo* aux;
+
+    aux = q.delante; // aux APUNTA AL INICIO DE LA COLA
+    nom = aux->per;
+    q.delante = (q.delante)->sgte;
+
+    free(aux); //LIBERA MEMORIA DONDE APUNTA aux
+
+    return nom;
+}
+
+/*  Muestra todos los nombres agregados en cola */
+
+void muestraCola(struct cola q) {
+
+    struct nodo* aux;
+
+    aux = q.delante;
+
+    while (aux != NULL) {
+        printf("%s -> ", aux->per.nom);
+        aux = aux->sgte;
+    }
+    printf("Fin de la cola\n");
+}
+
+/*     Elmina todos los nombres que tenemos en la cola   */
+
+void vaciaCola(struct cola* q) {
+
+    struct nodo* aux;
+
+    while (q->delante != NULL) {
+        aux = q->delante;
+        q->delante = aux->sgte;
+
+        free(aux);
+    }
+    q->delante = NULL;
+    q->atras = NULL;
+}
+
+/*                        FUNCION MENU DE OPCIONES 
+*
+* No hay dimensiones o tamaño del array, usted puede ingresar las notas que usted desee, lo dejo a criterio del usuario y agregue un extra que seria 
+* la opcion 4 "borrar todos los nombres de los clientes " para que en el momento que sea necesario eliminar todo, pueda hacerlo de un solo. no 1x1.  */
+
+void menu() {
+
+    cout << "\n\t  Mynor Ivan Aldana Mairn 0909-20-5400\n\n";
+    
+    printf("\n\t INGRESO DE NOMBRES DE CLIENTES (COLA)\n\n");
+
+    printf(" 1. ESTABLECER DIMENCION DE ARRAY            (FUNCION QUEUE) \n");
+    printf(" 2. ELIMINAR PRIMER NOMBRE INGRESADO         (FUNCION ENQUEUE)\n");
+    printf(" 3. MOSTRAR TODOS LOS NOMBRES                (VISUALIZAR COLA) \n");
+    printf(" 4. BORRAR TODOS LOS NOMBRES DE LOS CLIENTES (ELIMINAR COLA)  \n");
+    printf(" 5. FINALIZAR                    \n");
+    printf("\n INGRESE OPCION: ");
+
+}
+
+
+/*          FUNCION PRINCIPAL             */
+
+int main()
+{
+
+    struct cola q; //CREAMOS XCOLA
+    q.delante = NULL;
+    q.atras = NULL;
+    struct persona dato;//NOMBRE A ENCOLAR
+    struct persona x;//NOMBRE QUE DEVUELVE
+    int op; //OPCION DE MENU
+    system("color 09"); //LE DAMOS COLOR DE FONDO Y FUENTE A NUESTRO PROGRAMA
+
+    // INICIAMOS UNA ESTRUCTURA DO WHILE, PARA CREAR UN BUCLE
+    do
+    {   
+        //LLAMAMOS NUESTRA FUNCION DE MENU DE OPCIONES
+        menu(); 
+        cin >> op; //SE ALMACENA LA OPCION ELEGIDA POR EL USUARIO
+
+        //SEGUN LA OPCION HACER TAL CASO
+        switch (op)
+        {
+
+            // SI LA OPCION ES 1 HACE ESTO
+        case 1:
+            
+            //IMPRIMIMOS UN MENSAJE DONDE PEDIMOS EL NOMBRE Y LO ALMACENAMOS EN LA VARIABLE NOMBRE
+            printf("\nINGRESE UN NOMBRE A ENCOLAR: "); cin >> dato.nom;
+
+            //MANDAMOS A LLAMAR LA FUNCION QUEUE
+            encolar(&q, dato);
+
+            // LUEGO DE HABERCE APLICADO LA FUNCION, IMPRIMIMOS UN MENSAJE EN PANTALLA QUE DICE EL NOMBRE FUE REGISTRADO
+            printf("\n\tNOMBRE %s REGISTRADO CON EXITO...", dato.nom);
+            printf("\n\tDESEA INGRESAR OTRO NOMBRE VUELVA A OPCION 1...\n");
+
+            //INTERRUMPIMOS O DETENEMOS EL CASE
+            break;
+           
+            // SI LA OPCION ES 2 HACE ESTO
+        case 2:
+            //MANDAMOS A LLAMAR LA FUNCION ENQUEUE
+            x = desencolar(q);
+
+            // LUEGO DE HABER APLICADO LA FUNCION, IMPRIMIMOS UN MENSAJE EN PANTALLA QUE DICE EL NOMBRE FUE DESENCOLADO
+            printf("\n\n\t\tNOMBRE %s DESENCOLADO CON EXITO...\n\n", x.nom);
+
+
+            // DETENEMOS EL CASE
+            break;
+
+            // SI LA OPCION ES 3 HACE ESTO
+        case 3:
+            
+            //LLAMAMOS LA FUNCION PARA VISUALIZAR LA COLA
+            printf("\n\n MOSTRANDO COLA\n\n");
+            if (q.delante != NULL) muestraCola(q);
+
+            // SI NO HAY NOMBRES DE CLIENTES EN LA COLA NOS TIRA UN MENSJAE DE AVISO
+            else  printf("\n\n\tCola vacia...SIN NOMBRES INGRESADOS..!\n");
+
+            //INTERRUMPIMOS O DETENEMOS EL CASE
+            break;
+
+
+            // SI LA OPCION ES 4 HACE ESTO
+        case 4:
+            //LLAMAMOS LA FUNCION DESTRUIR O ELIMINAR COLA (TODOS LOS NOMBRES INGRESADOS)
+            vaciaCola(&q);
+            printf("\n\n\t\tCOLA ELIMINADA CON EXITO..!\n\n");
+
+            //INTERRUMPIMOS O DETENEMOS EL CASE
+            break;
+
+
+
+        } 
+        cout << endl << endl;
+        system("pause");// Hacemos una pausa
+        system("cls"); //Limpiamos pantalla
+
+        // SI LA OPCION ES 5 FINALIZA EL CICLO DO WHILE, OSEA QUE SALIMOS DEL RPOGRAMA
+    }while (op != 5);
+    
+
+    // AANDONAMOS LA FUNCION MAIN, OSEA TERMINAMOS EL PROGRAMA EN EJECUCION 
+   return 0;
+}
+/*
+* PROGRAMACION I EXAMEN FINAL
+* Mynor Ivan Aldana Marin 0909-20-5400
+* PROGRAMA NO.2 COLA, ARRAY QUE ALMACENE LOS NOMBRES DE CLIENTES
+*/
+
